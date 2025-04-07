@@ -1,0 +1,36 @@
+form.login_form {
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #2F4F4F;
+    border: 5px solid #551A8B;
+    border-radius: 20px;
+    padding: 10px;
+    max-width: 650px
+}
+
+ .parent {
+  margin-top: 0;
+  margin: 1rem;
+  padding: 2rem 2rem;
+  max-height: 100px
+}
+
+.child {
+  display: inline-block;
+  padding: 1rem 1rem;
+  vertical-align: middle;
+}
+
+.carousel {
+  height: 400px !important;
+}
+.carousel-inner img {
+  height: 400px !important;
+  margin: 0 auto;
+}
+.carousel-indicators li {
+  border-color: #000;
+}
+.carousel-indicators .active {
+  background-color: #000;
+}

@@ -46,8 +46,12 @@ def main():
     add_user("Irina", "+7 (900) 756-34-34", "г. Челябинск, ул. Доватора, дом 13",
              "_25Irina52_")
 
-    add_market("Немецкая противотанковая мина времён ВМв", "Очень хорошо работает",
-               1, 14088, True, "/static/images/mina.jpg", "Бытовая техника")
+    add_market("Немецкая противотанковая мина времён ВМв", "Очень хорошо работает", 1, 14088,
+               True, "/static/images/mina.jpg,  /static/images/mina_2.jpg, /static/images/mina_3.png",
+               "Бытовая техника")
+
+    add_market("Бита", "Ей можно бить", 2, 120,
+               True, "/static/images/bita.png, /static/images/bita_2.jpg", "Спорт")
 
     #  app.run()
 

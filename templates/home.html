@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="/static/css/home.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+{% for market in list %}
+<form class="login_form" action="" method="get" novalidate>
+    <h1>{{market.title}}</h1>
+    {% set sp_market =  market.img.split(', ') %}
+{% if sp_market|length == 1 %}
+    <img src={{market.img}}>
+{% else %}
+<div class="container mt-5">
+    <div id="carousel{{market.id}}" class="carousel slide" data-bs-ride="carousel">
+        <!-- Индикаторы -->
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carousel{{market.id}}" data-bs-slide-to="0" class="active"
+                    aria-current="true" aria-label="Slide 1"></button>
+            {%for i in range(1, sp_market|length)%}
+            <button type="button" data-bs-target="#carousel{{market.id}}" data-bs-slide-to={{i}}
+                    aria-label="Slide {{i + 1}}"></button>
+            {% endfor %}
+        </div>
+
+        <!-- Слайды -->
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src={{sp_market[0]}} class="d-block w-100" alt="Slide 1">
+                <div class="carousel-caption d-none d-md-block">
+                </div>
+            </div>
+            {%for i in range(1, sp_market|length)%}
+            <div class="carousel-item">
+                <img src={{sp_market[i]}} class="d-block w-100" alt="Slide {{i + 1}}">
+                <div class="carousel-caption d-none d-md-block">
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Кнопки управления -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#carousel{{market.id}}" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Предыдущий</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carousel{{market.id}}" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Следующий</span>
+        </button>
+    </div>
+</div>
+    {% endif %}
+    {% if current_user.id == market.seller or current_user.id == 1 %}
+<div class="parent">
+        <div class="child">
+            <a class="btn btn-info" href="/market_ad/{{ market.id }}">Подробнее</a>
+        </div>
+        <div class="child">
+            <a class="btn btn-warning" href="/edit_market/{{ market.id }}">Edit</a>
+        </div>
+        <div class="child">
+            <a class="btn btn-danger" href="/confirm/{{ market.id }}">Delete</a>
+        </div>
+</div>
+    {% else %}
+    <p></p>
+    <p></p>
+    <a class="btn btn-info" href="/market_ad/{{ market.id }}">Подробнее</a>
+{% endif %}
+</form>
+<p></p>
+{% endfor %}
+
+<!-- Подключаем Bootstrap JS и зависимости -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+{% endblock %}

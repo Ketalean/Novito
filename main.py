@@ -3,6 +3,7 @@ from flask_login import LoginManager, login_required, logout_user, login_user
 from flask_restful import Api
 
 from data.db_session import global_init, create_session
+from data.markets import Market
 from data.users import User
 from data import db_session
 from forms.loginform import LoginForm
@@ -69,6 +70,11 @@ def login():
 
 @login_manager.user_loader
 def load_user(user_id):
+    """
+    Позволяет получить информацию о пользователе.
+    :param user_id: id пользователя, int
+    :return: объект, у которого можно получить информацию о пользователе с user_id
+    """
     db_sess = db_session.create_session()
     return db_sess.query(User).get(user_id)
 
@@ -76,6 +82,10 @@ def load_user(user_id):
 @app.route('/logout')
 @login_required
 def logout():
+    """
+    Выход из аккаунта
+    :return: перекидывает на главную страницу
+    """
     logout_user()
     return redirect("/")
 
@@ -83,10 +93,22 @@ def logout():
 @app.route('/index')
 @app.route('/')
 def index():
-    return render_template('base.html', title='Милый дом')
+    """
+    Домашняя страница
+    :return: html код домашней страницы
+    """
+    db_sess = create_session()
+    lst = []
+    for market in db_sess.query(Market).all():
+        lst.append(market)
+    return render_template('home.html', title='Милый дом', list=lst)
 
 
 def main():
+    """
+    Главная функция. Инициализирует БД, позволяет работать с ней. Запускается работа сервера
+    :return: Nothing
+    """
     db_session.global_init("db/blogs.db")
     app.run(port=8080, host='127.0.0.1', debug=True)
 
