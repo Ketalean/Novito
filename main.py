@@ -87,6 +87,18 @@ def logout():
     return redirect("/")
 
 
+@app.route('/market_ad/<id>')
+def ad(id):
+    """
+    Позволяет перейти на нужное объявление.
+    :param id: id объявления, int
+    :return: страница объявления жи есть (пока на бэйс)
+    """
+    db_sess = db_session.create_session()
+    ad = db_sess.query(Market).filter(Market.id == id).first()
+    return render_template('base.html')
+
+
 @app.route('/index')
 @app.route('/')
 def index():
