@@ -14,7 +14,7 @@ background: #dc3545
 }
 
 body {
-    background-color: #6B3FA0;
+    background-image: repeating-linear-gradient(90deg, #6B3FA0 0px, #90AC53 100vw);
     color: #e6dfdf;
   }
 

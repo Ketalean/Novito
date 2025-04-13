@@ -1,6 +1,7 @@
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, request
 from flask_login import LoginManager, login_required, logout_user, login_user
 from flask_restful import Api
+from PIL import Image
 
 from data.db_session import global_init, create_session
 from data.markets import Market
@@ -8,6 +9,7 @@ from data.users import User
 from data import db_session
 from forms.loginform import LoginForm
 from forms.regform import RegisterForm
+from forms.market_form import MarketForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -85,6 +87,79 @@ def logout():
     """
     logout_user()
     return redirect("/")
+
+
+@app.route('/add_market', methods=['GET', 'POST'])
+@login_required
+def add_market():
+    form = MarketForm()
+    if form.validate_on_submit():
+        with open('./static/save_images/num.txt') as f:
+            n = int(f.readline())
+            n += 1
+            with open('./static/save_images/num.txt', 'w') as file:
+                file.write(str(n))
+            f = request.files['file']
+            f.save(f'./static/save_images/p{n}.png')
+            im = Image.open(f'./static/save_images/p{n}.png')
+            im = im.resize((400, 200))
+            im.save(f'./static/save_images/p{n}.png')
+        db_sess = db_session.create_session()
+        market = Market(
+            title=form.title.data,
+            description=form.description.data,
+            price=form.price.data,
+            contacts=form.contacts.data,
+            address=form.address.data,
+            img=f'/static/save_images/p{n}.png',
+            category=form.category.data
+        )
+        db_sess.add(market)
+        db_sess.commit()
+        return redirect('/')
+    return render_template('add_market.html', title='Добавление товара', form=form)
+
+
+@app.route("/edit_market/<market_id>", methods=['GET', 'POST'])
+def edit_market(market_id):
+    form = MarketForm()
+    if form.validate_on_submit():
+        if request.files['file'] is not None:
+            with open('./static/save_images/num.txt') as f:
+                n = int(f.readline())
+                n += 1
+                with open('./static/save_images/num.txt', 'w') as file:
+                    file.write(str(n))
+            f = request.files['file']
+            f.save(f'./static/save_images/p{n}.png')
+        db_sess = db_session.create_session()
+        market = db_sess.query(Market).filter(Market.id == int(market_id)).first()
+
+        market.title = form.title.data
+        market.description = form.description.data
+        market.price = form.price.data
+        market.contacts = form.contacts.data
+        market.address = form.address.data
+        market.stock = form.stock.data
+        market.category = form.category.data
+        if request.files['file'] is not None:
+            market.img = market.img + f', /static/save_images/p{n}.png'
+
+        db_sess.commit()
+        return redirect('/')
+
+    db_sess = db_session.create_session()
+    market = db_sess.query(Market).filter(Market.id == int(market_id)).first()
+
+    form.title.data = market.title
+    form.description.data = market.description
+    form.price.data = market.price
+    form.contacts.data = market.contacts
+    form.address.data = market.address
+    form.stock.data = market.stock
+    form.category.data = market.category
+
+    return render_template('add_market.html', title='Редактирование товара', form=form)
 
 
 @app.route('/index')
