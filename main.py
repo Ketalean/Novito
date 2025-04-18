@@ -92,6 +92,10 @@ def logout():
 @app.route('/add_market', methods=['GET', 'POST'])
 @login_required
 def add_market():
+    """
+    Обработчик страницы, позволяющей добавить товар
+    :return: html код страницы, позволяющей добавить товар
+    """
     form = MarketForm()
     if form.validate_on_submit():
         with open('./static/save_images/num.txt') as f:
@@ -122,6 +126,10 @@ def add_market():
 
 @app.route("/edit_market/<market_id>", methods=['GET', 'POST'])
 def edit_market(market_id):
+    """
+        Обработчик страницы, позволяющей изменять информацию о товаре
+        :return: html код страницы, позволяющей изменять информацию о товаре
+        """
     form = MarketForm()
     if form.validate_on_submit():
         if request.files['file'] is not None:
@@ -160,6 +168,23 @@ def edit_market(market_id):
     form.category.data = market.category
 
     return render_template('add_market.html', title='Редактирование товара', form=form)
+
+
+@app.route('/delete_market/<market_id>')
+def delete_market(market_id):
+    db_sess = db_session.create_session()
+    market = db_sess.query(Market).filter(Market.id == market_id).first()
+    if market:
+        db_sess.delete(market)
+        db_sess.commit()
+        return redirect('/')
+    else:
+        return 404
+
+
+@app.route('/confirm/<market_id>')
+def confirm(market_id):
+    return render_template('confirmation.html', title='Уверен?', id=market_id)
 
 
 @app.route('/index')

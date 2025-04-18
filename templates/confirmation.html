@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="/static/css/home.css">
+{% endblock %}
+
+{% block content %}
+<h1>Вы уверены?</h1>
+<div class="parent">
+        <div class="child">
+            <a class="btn btn-danger" href="/delete_market/{{ id }}">Да</a>
+        </div>
+        <div class="child">
+            <a class="btn btn-success" href="/">Нет</a>
+        </div>
+</div>
+{% endblock %}

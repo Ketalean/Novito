@@ -5,9 +5,18 @@ from data.markets import Market
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+#  пайтон файл, создающий БД (novito.db). Следует запустить, если нет папки db или если в этой папке нет самой БД
 
 
 def add_user(username, phone, address, password):
+    """
+    Функция добавляет пользователей в таблицу Users в БД novito.db
+    :param username: <str> имя пользователя
+    :param phone: <str> номер телефона
+    :param address: <str> адрес
+    :param password: <str> пароль
+    :return: None
+    """
     user = User()
     user.username = username
     user.phone = phone
@@ -19,6 +28,17 @@ def add_user(username, phone, address, password):
 
 
 def add_market(title, description, seller, price, stock, img, category):
+    """
+    Функция добавляет товары в таблицу Users в БД novito.db
+    :param title: <str>
+    :param description: <str>
+    :param seller: <int>
+    :param price: <int>
+    :param stock: <bool>
+    :param img: <str>
+    :param category: <str>
+    :return: None
+    """
     market = Market()
     market.title = title
     market.description = description
@@ -37,6 +57,11 @@ def add_market(title, description, seller, price, stock, img, category):
 
 
 def main():
+    """
+    Главная функция данного файла. Подключается к БД novito.db и заполняет её информацией, используя доп функции:
+    add_user() и add_market()
+    :return: None
+    """
     db_session.global_init("db/novito.db")
     db_sess = db_session.create_session()
     for user in db_sess.query(User).all():

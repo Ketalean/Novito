@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, SubmitField, BooleanField, FileField
 from wtforms.validators import DataRequired
+#  класс, который является flask-формой для заполнения информации о товаре
 
 
 class MarketForm(FlaskForm):

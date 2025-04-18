@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, IntegerField, SubmitField, EmailField
-from wtforms.validators import DataRequired, ValidationError, Length
+from wtforms import StringField, PasswordField, SubmitField
+from wtforms.validators import DataRequired, Length
+#  класс, который является flask-формой для регистрации пользователя
 
 
 class RegisterForm(FlaskForm):
