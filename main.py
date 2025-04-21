@@ -92,9 +92,9 @@ def logout():
     return redirect("/")
 
 
-@app.route('/add_market', methods=['GET', 'POST'])
+@app.route('/add_market/<user_id>', methods=['GET', 'POST'])
 @login_required
-def add_market():
+def add_market(user_id):
     """
     Обработчик страницы, позволяющей добавить товар
     :return: html код страницы, позволяющей добавить товар
@@ -115,6 +115,7 @@ def add_market():
         market = Market(
             title=form.title.data,
             description=form.description.data,
+            seller=user_id,
             price=form.price.data,
             contacts=form.contacts.data,
             address=form.address.data,
@@ -124,6 +125,11 @@ def add_market():
         db_sess.add(market)
         db_sess.commit()
         return redirect('/')
+
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).filter(User.id == user_id).first()
+    form.contacts.data = user.phone
+
     return render_template('add_market.html', title='Добавление товара', form=form)
 
 
