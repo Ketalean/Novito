@@ -7,6 +7,9 @@ from data.db_session import global_init, create_session
 from data.markets import Market
 from data.users import User
 from data import db_session
+from data.API import users_api
+from data.API import markets_api
+from data.API import category_api
 from forms.loginform import LoginForm
 from forms.regform import RegisterForm
 from forms.market_form import MarketForm
@@ -132,7 +135,7 @@ def edit_market(market_id):
         """
     form = MarketForm()
     if form.validate_on_submit():
-        if request.files['file'] is not None:
+        if request.files['file']:
             with open('./static/save_images/num.txt') as f:
                 n = int(f.readline())
                 n += 1
@@ -150,7 +153,7 @@ def edit_market(market_id):
         market.address = form.address.data
         market.stock = form.stock.data
         market.category = form.category.data
-        if request.files['file'] is not None:
+        if request.files['file']:
             market.img = market.img + f', /static/save_images/p{n}.png'
 
         db_sess.commit()
@@ -206,7 +209,26 @@ def main():
     Главная функция. Инициализирует БД, позволяет работать с ней. Запускается работа сервера
     :return: Nothing
     """
-    db_session.global_init("db/blogs.db")
+
+    # Добавляет API для работы со списком пользователей
+    api.add_resource(users_api.UsersListResource, '/api/users')
+
+    # Добавляет API для работы с одним пользователем
+    api.add_resource(users_api.UsersResource, '/api/users/<user_id>')
+
+    # Добавляет API для работы со списком товаров
+    api.add_resource(markets_api.MarketsListResource, '/api/markets')
+
+    # Добавляет API для работы с одним товаром
+    api.add_resource(markets_api.MarketsResource, '/api/markets/<market_id>')
+
+    # Добавляет API для работы со списком категорий
+    api.add_resource(category_api.CategorysListResource, '/api/category')
+
+    # Добавляет API для работы с одной категорией
+    api.add_resource(category_api.CategorysResource, '/api/category/<category_id>')
+
+    db_session.global_init("db/novito.db")
     app.run(port=8080, host='127.0.0.1', debug=True)
 
 
