@@ -191,6 +191,19 @@ def delete_market(market_id):
         return 404
 
 
+@app.route('/market_ad/<id>')
+def ad(id):
+    """
+    Позволяет перейти на нужное объявление.
+    :param id: id объявления, int
+    :return: страница объявления жи есть
+    """
+    db_sess = db_session.create_session()
+    ad = db_sess.query(Market).filter(Market.id == id).first()
+    format_price = '{0:,}'.format(ad.price).replace(',', ' ')
+    return render_template('ad.html', market=ad, price=format_price)
+
+
 @app.route('/confirm/<market_id>')
 def confirm(market_id):
     return render_template('confirmation.html', title='Уверен?', id=market_id)
