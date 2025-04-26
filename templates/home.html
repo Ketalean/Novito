@@ -6,6 +6,29 @@
 {% endblock %}
 
 {% block content %}
+{% if category == "Все" %}
+<div class="form-group">
+<form class="login_form" method="post">
+<div class="form-group">
+    <h1 for="edSelect">Что вы ищете?</h1>
+    <p></p>
+    <select class="form-select" id="edSelect" name="education">
+        <option value="Все">{{categories[0]}}</option>
+        <option value="Бытовая техника">{{categories[1]}}</option>
+        <option value="Спорт">{{categories[2]}}</option>
+    </select>
+</div>
+    <p></p>
+<button type="submit" class="btn btn-primary">Найти</button>
+</form>
+</div>
+<p></p>
+{% else %}
+<form class="login_form" action="" method="get" novalidate>
+<h1>{{category}}</h1>
+</form>
+<p></p>
+{% endif %}
 {% for market in list %}
 <form class="login_form" action="" method="get" novalidate>
     <h1>{{market.title}}</h1>

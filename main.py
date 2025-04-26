@@ -210,17 +210,28 @@ def confirm(market_id):
 
 
 @app.route('/index')
-@app.route('/')
+@app.route('/', methods=['POST', 'GET'])
 def index():
     """
     Домашняя страница
     :return: html код домашней страницы
     """
+    categories = ['Все', 'Бытовая техника', 'Спорт']
+    if request.method == 'POST':
+        chosen = request.form['education']
+    else:
+        chosen = "Все"
+    print(categories)
     db_sess = create_session()
     lst = []
     for market in db_sess.query(Market).all():
-        lst.append(market)
-    return render_template('home.html', title='Милый дом', list=lst)
+        if chosen == 'Все':
+            lst.append(market)
+        else:
+            if market.category == chosen:
+                lst.append(market)
+    return render_template('home.html', title='Novito: все что вам нужно', list=lst, category=chosen,
+                           categories=categories)
 
 
 def main():
