@@ -13,5 +13,4 @@ class MarketForm(FlaskForm):
     address = StringField('Адрес', validators=[DataRequired()])
     stock = BooleanField('Есть в наличии')
     img = FileField('Изображение')
-    category = StringField('Категория', validators=[DataRequired()])
     submit = SubmitField('Отправить')

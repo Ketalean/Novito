@@ -51,14 +51,50 @@
             <label for="photo">Приложите фотографию</label>
             <input type="file" class="form-control-file" id="photo" name="file">
         </div>
-    <p></p>
-    {{ form.category.label }}<br>
-        {{ form.category(class="form-control") }}<br>
-        {% for error in form.category.errors %}
-        <div class="alert alert-danger" role="alert">
-            {{ error }}
+    {% if img_error %}
+    <div class="alert alert-danger" role="alert">
+            {{ img_error }}
         </div>
-        {% endfor %}
+    {% endif %}
+    <p></p>
+<div class="form-group">
+    <h5 for="edSelect">Категория</h5>
+    <p></p>
+    <select class="form-select" id="edSelect" name="education">
+        {% if category_id == 1 %}
+        <option value="Техника" selected>{{categories[0]}}</option>
+        {% else %}
+        <option value="Техника">{{categories[0]}}</option>
+        {% endif %}
+        {% if category_id == 2 %}
+        <option value="Спорт" selected>{{categories[1]}}</option>
+        {% else %}
+        <option value="Спорт">{{categories[1]}}</option>
+        {% endif %}
+        {% if category_id == 3 %}
+        <option value="Природа" selected>{{categories[2]}}</option>
+        {% else %}
+        <option value="Природа">{{categories[2]}}</option>
+        {% endif %}
+        {% if category_id == 4 %}
+        <option value="Отдых" selected>{{categories[3]}}</option>
+        {% else %}
+        <option value="Отдых">{{categories[3]}}</option>
+        {% endif %}
+        {% if category_id == 5 %}
+        <option value="Еда" selected>{{categories[4]}}</option>
+        {% else %}
+        <option value="Еда">{{categories[4]}}</option>
+        {% endif %}
+        {% if category_id == 6 %}
+        <option value="Другое" selected>{{categories[5]}}</option>
+        {% else %}
+        <option value="Другое">{{categories[5]}}</option>
+        {% endif %}
+    </select>
+</div>
+    <p></p>
+    {{ form.stock }} {{ form.stock.label }}<br>
     <p>{{ form.submit(type="submit", class="btn btn-info") }}</p>
     {{ message }}
 </form>

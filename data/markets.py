@@ -24,5 +24,6 @@ class Market(SqlAlchemyBase, SerializerMixin):
     address = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     stock = sqlalchemy.Column(sqlalchemy.Boolean)
     img = sqlalchemy.Column(sqlalchemy.String)
-    category = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("categories.id"))
+    category_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("categories.id"))
     user = orm.relationship('User')
+    category = orm.relationship('Category')

@@ -3,6 +3,7 @@ from flask_login import LoginManager, login_required, logout_user, login_user
 from flask_restful import Api
 from PIL import Image
 
+from data.categories import Category
 from data.db_session import global_init, create_session
 from data.markets import Market
 from data.users import User
@@ -100,7 +101,11 @@ def add_market(user_id):
     :return: html код страницы, позволяющей добавить товар
     """
     form = MarketForm()
+    categories = ['Техника', 'Спорт', 'Природа', 'Отдых', 'Еда', 'Другое']
     if form.validate_on_submit():
+        if not request.files['file']:
+            return render_template('add_market.html', title='Добавление товара',
+                                   form=form, img_error='Вы забыли добавить изображение!', categories=categories)
         with open('./static/save_images/num.txt') as f:
             n = int(f.readline())
             n += 1
@@ -111,7 +116,9 @@ def add_market(user_id):
             im = Image.open(f'./static/save_images/p{n}.png')
             im = im.resize((400, 200))
             im.save(f'./static/save_images/p{n}.png')
+        chosen = request.form['education']
         db_sess = db_session.create_session()
+        category_id = db_sess.query(Category).filter(Category.name == chosen).first().id
         market = Market(
             title=form.title.data,
             description=form.description.data,
@@ -120,7 +127,8 @@ def add_market(user_id):
             contacts=form.contacts.data,
             address=form.address.data,
             img=f'/static/save_images/p{n}.png',
-            category=form.category.data
+            stock=form.stock.data,
+            category_id=category_id
         )
         db_sess.add(market)
         db_sess.commit()
@@ -130,7 +138,8 @@ def add_market(user_id):
     user = db_sess.query(User).filter(User.id == user_id).first()
     form.contacts.data = user.phone
 
-    return render_template('add_market.html', title='Добавление товара', form=form)
+    return render_template('add_market.html', title='Добавление товара',
+                           form=form, img_error='', categories=categories)
 
 
 @app.route("/edit_market/<market_id>", methods=['GET', 'POST'])
@@ -140,6 +149,7 @@ def edit_market(market_id):
         :return: html код страницы, позволяющей изменять информацию о товаре
         """
     form = MarketForm()
+    categories = ['Техника', 'Спорт', 'Природа', 'Отдых', 'Еда', 'Другое']
     if form.validate_on_submit():
         if request.files['file']:
             with open('./static/save_images/num.txt') as f:
@@ -150,6 +160,8 @@ def edit_market(market_id):
             f = request.files['file']
             f.save(f'./static/save_images/p{n}.png')
         db_sess = db_session.create_session()
+        chosen = request.form['education']
+        category_id = db_sess.query(Category).filter(Category.name == chosen).first().id
         market = db_sess.query(Market).filter(Market.id == int(market_id)).first()
 
         market.title = form.title.data
@@ -158,7 +170,7 @@ def edit_market(market_id):
         market.contacts = form.contacts.data
         market.address = form.address.data
         market.stock = form.stock.data
-        market.category = form.category.data
+        market.category_id = category_id
         if request.files['file']:
             market.img = market.img + f', /static/save_images/p{n}.png'
 
@@ -174,9 +186,11 @@ def edit_market(market_id):
     form.contacts.data = market.contacts
     form.address.data = market.address
     form.stock.data = market.stock
-    form.category.data = market.category
+    category_id = market.category_id
+    print(category_id)
 
-    return render_template('add_market.html', title='Редактирование товара', form=form)
+    return render_template('add_market.html', title='Редактирование товара', form=form,
+                           categories=categories, category_id=category_id)
 
 
 @app.route('/delete_market/<market_id>')
@@ -216,7 +230,7 @@ def index():
     Домашняя страница
     :return: html код домашней страницы
     """
-    categories = ['Все', 'Бытовая техника', 'Спорт']
+    categories = ['Все', 'Техника', 'Спорт', 'Природа', 'Отдых', 'Еда']
     if request.method == 'POST':
         chosen = request.form['education']
     else:
@@ -228,7 +242,7 @@ def index():
         if chosen == 'Все':
             lst.append(market)
         else:
-            if market.category == chosen:
+            if market.category.name == chosen:
                 lst.append(market)
     return render_template('home.html', title='Novito: все что вам нужно', list=lst, category=chosen,
                            categories=categories)

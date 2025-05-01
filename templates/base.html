@@ -22,12 +22,14 @@
       <li class="nav-item active">
         <a class="nav-link" href="/">Home</a>
       </li>
+        {% if current_user.is_authenticated %}
       <li class="nav-item">
         <a class="nav-link" href="/logout">Выйти из аккаунта</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/add_market/{{current_user.id}}">Добавление объявления</a>
       </li>
+        {% endif %}
     </ul>
   </div>
 </nav>

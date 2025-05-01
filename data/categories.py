@@ -7,7 +7,7 @@ class Category(SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'categories'
 
     def __str__(self):
-        return f"<Category> {self.id}: {self.name} {self.user.username}"
+        return f"<Category> {self.id}: {self.name}"
 
     def __repr__(self):
         return self.__str__()
@@ -15,3 +15,4 @@ class Category(SqlAlchemyBase, SerializerMixin):
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
     name = sqlalchemy.Column(sqlalchemy.String)
+    market = sqlalchemy.orm.relationship("Market", back_populates='category')
