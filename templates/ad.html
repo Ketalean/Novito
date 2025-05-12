@@ -6,60 +6,72 @@
 {% endblock %}
 
 {% block content %}
-<form class="ad_place" action="" method="get" novalidate>
-    <h1>{{market.title}}</h1>
-    {% set sp_market =  market.img.split(', ') %}
-{% if sp_market|length == 1 %}
-    <img src={{market.img}}>
-{% else %}
 <div class="container mt-5">
-    <div id="carousel{{market.id}}" class="carousel slide" data-bs-ride="carousel">
-        <!-- Индикаторы -->
-        <div class="carousel-indicators">
-            <button type="button" data-bs-target="#carousel{{market.id}}" data-bs-slide-to="0" class="active"
-                    aria-current="true" aria-label="Slide 1"></button>
-            {%for i in range(1, sp_market|length)%}
-            <button type="button" data-bs-target="#carousel{{market.id}}" data-bs-slide-to={{i}}
-                    aria-label="Slide {{i + 1}}"></button>
-            {% endfor %}
-        </div>
+    <div class="card p-4 shadow-sm">
+        <div class="row">
+            <div class="col-md-7">
+                {% set sp_market =  market.img.split(', ') %}
+                {% if sp_market|length == 1 %}
+                    <img src="{{market.img}}" class="img-fluid rounded mb-3" alt="Фото товара">
+                {% else %}
+                    <div id="carousel{{market.id}}" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-indicators">
+                            <button type="button" data-bs-target="#carousel{{market.id}}" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                            {% for i in range(1, sp_market|length) %}
+                            <button type="button" data-bs-target="#carousel{{market.id}}" data-bs-slide-to="{{i}}" aria-label="Slide {{i + 1}}"></button>
+                            {% endfor %}
+                        </div>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img src="{{sp_market[0]}}" class="d-block w-100 rounded" alt="Slide 1">
+                            </div>
+                            {% for i in range(1, sp_market|length) %}
+                            <div class="carousel-item">
+                                <img src="{{sp_market[i]}}" class="d-block w-100 rounded" alt="Slide {{i + 1}}">
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carousel{{market.id}}" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Предыдущий</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carousel{{market.id}}" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Следующий</span>
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
 
-        <!-- Слайды -->
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <img src={{sp_market[0]}} class="d-block w-100" alt="Slide 1">
-                <div class="carousel-caption d-none d-md-block">
+            <!-- Инфо о товаре -->
+            <div class="col-md-5">
+                <h2 class="fw-bold">{{ market.title }}</h2>
+                <p class="text-muted">Категория: {{ cat }}</p>
+                <h3 class="text-success fw-bold">{{ price }} ₽</h3>
+
+                <h4 class="text-muted">Номер телефона</h4>
+                <p class="text-muted">{{seller.phone}}</p>
+
+                <div class="mt-4">
+                    <h5><strong>Продавец</strong></h5>
+                    <p>{{seller.username}}</p>
+                    <h6><strong>Адрес</strong></h6>
+                    <p>{{seller.address}}</p>
+                    <p class="text-muted">На сайте с {{reg_date}}</p>
                 </div>
             </div>
-            {%for i in range(1, sp_market|length)%}
-            <div class="carousel-item">
-                <img src={{sp_market[i]}} class="d-block w-100" alt="Slide {{i + 1}}">
-                <div class="carousel-caption d-none d-md-block">
-                </div>
-            </div>
-            {% endfor %}
         </div>
 
-        <!-- Кнопки управления -->
-        <button class="carousel-control-prev" type="button" data-bs-target="#carousel{{market.id}}" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Предыдущий</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carousel{{market.id}}" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Следующий</span>
-        </button>
+        <!-- Описание -->
+        <hr class="my-4">
+        <div>
+            <h4>Описание</h4>
+            <p>{{ market.description }}</p>
+        </div>
     </div>
 </div>
-    {% endif %}
-<p></p>
-    <h2>{{price}} ₽</h2>
-    <h3>Описание</h3>
-    <p>{{market.description}}</p>
-</form>
-<p></p>
 
-<!-- Подключаем Bootstrap JS и зависимости -->
+<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 {% endblock %}

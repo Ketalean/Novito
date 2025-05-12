@@ -214,8 +214,12 @@ def ad(id):
     """
     db_sess = db_session.create_session()
     ad = db_sess.query(Market).filter(Market.id == id).first()
+    format_category = str(ad.category)[14:]
+    seller = db_sess.query(User).filter(User.id == ad.seller).first()
+    format_regdate = seller.reg_date.strftime('%d-%m-%Y')
+    print(seller.address)
     format_price = '{0:,}'.format(ad.price).replace(',', ' ')
-    return render_template('ad.html', market=ad, price=format_price)
+    return render_template('ad.html', market=ad, price=format_price, cat=format_category, seller=seller, reg_date=format_regdate)
 
 
 @app.route('/confirm/<market_id>')
@@ -235,7 +239,6 @@ def index():
         chosen = request.form['education']
     else:
         chosen = "Все"
-    print(categories)
     db_sess = create_session()
     lst = []
     for market in db_sess.query(Market).all():
